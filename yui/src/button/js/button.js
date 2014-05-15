@@ -66,42 +66,36 @@ Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_at
      */
     _currentSelection: null,
 
+    initializer: function() {
+        // If we don't have the capability to view then give up.
+        if (this.get('disabled')){
+            return;
+        }
+
+        var twoicons = ['iconone', 'icontwo'];
+
+        Y.Array.each(twoicons, function(theicon) {
+            // Add the NEWTEMPLATE icon/buttons
+            this.addButton({
+                icon: 'ed/' + theicon,
+                iconComponent: 'atto_NEWTEMPLATE',
+                buttonName: theicon,
+                callback: this._displayDialogue,
+                callbackArgs: theicon
+            });
+        }, this);
+
+    },
+
     /**
-     * A reference to the passed in data
+     * Get the id of the flavor control where we store the ice cream flavor
      *
-     * 
-     * @type Node
+     * @method _getFlavorControlName
+     * @return {String} the name/id of the flavor form field
      * @private
      */
-    _usercontextid: null,
-    _config: null,
-
-
-    initializer: function(config) {
-    	//we don't actually need this, but it illustrates how to get data down to JS from PHP
-        this._usercontextid = config.usercontextid;
-        
-        //config
-        this._config = config;
-
-        
-        //if we don't have the capability to view then give up.
-        if(config.disabled){
-        	return;
-        }
-    
-    	var twoicons = new Array('iconone','icontwo');
-    	for (var theicon = 0; theicon < twoicons.length; theicon++) {
-			// Add the NEWTEMPLATE icon/buttons
-				this.addButton({
-					icon: 'ed/' + twoicons[theicon],
-					iconComponent: 'atto_NEWTEMPLATE',
-					buttonName: twoicons[theicon],
-					callback: this._displayDialogue,
-					callbackArgs: twoicons[theicon]
-				});
-        }
-       
+    _getFlavorControlName: function(){
+        return(this.get('host').get('elementid') + '_' + FLAVORCONTROL);
     },
 
      /**
@@ -111,23 +105,24 @@ Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_at
      * @private
      */
     _displayDialogue: function(e, clickedicon) {
-    	e.preventDefault();
-    	var width=400;
-    	var height=260;
-    	
+        e.preventDefault();
+        var width=400;
+        var height=260;
+
 
         var dialogue = this.getDialogue({
             headerContent: M.util.get_string('dialogtitle', COMPONENTNAME),
             width: width + 'px',
             focusAfterHide: clickedicon
         });
+
         if(dialogue.width != width + 'px'){
-        	dialogue.set('width',width+'px');
+            dialogue.set('width',width+'px');
         }
 
         //append buttons to iframe
         var buttonform = this._getFormContent(clickedicon);
-        
+
         var bodycontent =  Y.Node.create('<div></div>');
         bodycontent.append(buttonform);
 
@@ -136,8 +131,8 @@ Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_at
         dialogue.show();
         this.markUpdated();
     },
-    
-    
+
+
      /**
      * Return the dialogue content for the tool, attaching any required
      * events.
@@ -153,7 +148,7 @@ Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_at
                 CSS: CSS,
                 FLAVORCONTROL: FLAVORCONTROL,
                 component: COMPONENTNAME,
-                defaultflavor: this._config.defaultflavor,
+                defaultflavor: this.get('defaultflavor'),
                 clickedicon: clickedicon
             }));
 
@@ -185,5 +180,17 @@ Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_at
         this.get('host').insertContentAtFocusPoint(flavorcontrol.get('value'));
         this.markUpdated();
 
+    }
+}, {
+    disabled: {
+        value: false
+    },
+
+    usercontextid: {
+        value: null
+    },
+
+    defaultflavor: {
+        value: ''
     }
 });
