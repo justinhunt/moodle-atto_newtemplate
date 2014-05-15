@@ -9,10 +9,12 @@ this module template code.
 * Unzip the archive and read this file. (so far so good eh)
 
 * Rename the NEWTEMPLATE/ folder to the name of your module (eg "widget").
-  The plugin folder MUST be lower case and can't contain underscores. You should check the CVS contrib
-  area at http://cvs.moodle.org/contrib/plugins/mod/ to make sure that
-  your name is not already used by an other module. Registering the plugin
-  name @ http://moodle.org/plugins will secure it for you.
+  The plugin folder MUST be lower case and can't contain underscores.
+  You shoudl check the Moodle plugin repository at
+  https://moodle.org/plugins/browse.php?list=category&id=53 to confirm that
+  the name you wish to use isn't already in use.
+  Registering the plugin name at http://moodle.org/plugins will secure it
+  for you.
 
 * Edit all the files in this directory and its subdirectories and change
   all the instances of the string "NEWTEMPLATE" to your atto plugin name
