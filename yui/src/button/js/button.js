@@ -37,20 +37,22 @@ var LOGNAME = 'atto_NEWTEMPLATE';
 
 var CSS = {
         INPUTSUBMIT: 'atto_media_urlentrysubmit',
-        INPUTCANCEL: 'atto_media_urlentrycancel'     
+        INPUTCANCEL: 'atto_media_urlentrycancel',
+        FLAVORCONTROL: 'flavorcontrol'
+    },
+    SELECTORS = {
+        FLAVORCONTROL: '.flavorcontrol'
     };
 
 var TEMPLATE = '' +
-  '<form class="atto_form">' +
-   '<div id="{{elementid}}_{{innerform}}" class="mdl-align">' +
-   '<label for="{{elementid}}_{{FLAVORCONTROL}}">{{get_string "enterflavor" component}}</label>' +
-   '<input id="{{elementid}}_{{FLAVORCONTROL}}" name="{{elementid}}_{{FLAVORCONTROL}}" value="{{defaultflavor}}" />' +
-	'<button class="{{CSS.INPUTSUBMIT}}">{{get_string "insert" component}}</button>' +
-    '</div>' +
-    'icon: {{clickedicon}}'  +
-	'</form>';
-
-
+    '<form class="atto_form">' +
+        '<div id="{{elementid}}_{{innerform}}" class="mdl-align">' +
+            '<label for="{{elementid}}_{{FLAVORCONTROL}}">{{get_string "enterflavor" component}}</label>' +
+            '<input class="{{CSS.FLAVORCONTROL}} id="{{elementid}}_{{FLAVORCONTROL}}" name="{{elementid}}_{{FLAVORCONTROL}}" value="{{defaultflavor}}" />' +
+            '<button class="{{CSS.INPUTSUBMIT}}">{{get_string "insert" component}}</button>' +
+        '</div>' +
+        'icon: {{clickedicon}}'  +
+    '</form>';
 
 Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_atto.EditorPlugin, [], {
 
@@ -64,55 +66,38 @@ Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_at
      */
     _currentSelection: null,
 
-    /**
-     * A reference to the passed in data
-     *
-     * 
-     * @type Node
-     * @private
-     */
-    _usercontextid: null,
-    _config: null,
-
-
-    initializer: function(config) {
-    	//we don't actually need this, but it illustrates how to get data down to JS from PHP
-        this._usercontextid = config.usercontextid;
-        
-        //config
-        this._config = config;
-
-        
-        //if we don't have the capability to view then give up.
-        if(config.disabled){
-        	return;
+    initializer: function() {
+        // If we don't have the capability to view then give up.
+        if (this.get('disabled')){
+            return;
         }
-    
-    	var twoicons = new Array('iconone','icontwo');
-    	for (var theicon = 0; theicon < twoicons.length; theicon++) {
-			// Add the NEWTEMPLATE icon/buttons
-				this.addButton({
-					icon: 'ed/' + twoicons[theicon],
-					iconComponent: 'atto_NEWTEMPLATE',
-					buttonName: twoicons[theicon],
-					callback: this._displayDialogue,
-					callbackArgs: twoicons[theicon]
-				});
-        }
-       
+
+        var twoicons = ['iconone', 'icontwo'];
+
+        Y.Array.each(twoicons, function(theicon) {
+            // Add the NEWTEMPLATE icon/buttons
+            this.addButton({
+                icon: 'ed/' + theicon,
+                iconComponent: 'atto_NEWTEMPLATE',
+                buttonName: theicon,
+                callback: this._displayDialogue,
+                callbackArgs: theicon
+            });
+        }, this);
+
     },
-    
-         /**
+
+    /**
      * Get the id of the flavor control where we store the ice cream flavor
      *
      * @method _getFlavorControlName
      * @return {String} the name/id of the flavor form field
      * @private
      */
-	_getFlavorControlName: function(){
-		return(this.get('host').get('elementid') + '_' + FLAVORCONTROL);
-	},
- 
+    _getFlavorControlName: function(){
+        return(this.get('host').get('elementid') + '_' + FLAVORCONTROL);
+    },
+
      /**
      * Display the NEWTEMPLATE Recorder files.
      *
@@ -120,23 +105,24 @@ Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_at
      * @private
      */
     _displayDialogue: function(e, clickedicon) {
-    	e.preventDefault();
-    	var width=400;
-    	var height=260;
-    	
+        e.preventDefault();
+        var width=400;
+        var height=260;
+
 
         var dialogue = this.getDialogue({
             headerContent: M.util.get_string('dialogtitle', COMPONENTNAME),
             width: width + 'px',
             focusAfterHide: clickedicon
         });
+
         if(dialogue.width != width + 'px'){
-        	dialogue.set('width',width+'px');
+            dialogue.set('width',width+'px');
         }
 
         //append buttons to iframe
         var buttonform = this._getFormContent(clickedicon);
-        
+
         var bodycontent =  Y.Node.create('<div></div>');
         bodycontent.append(buttonform);
 
@@ -145,8 +131,8 @@ Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_at
         dialogue.show();
         this.markUpdated();
     },
-    
-    
+
+
      /**
      * Return the dialogue content for the tool, attaching any required
      * events.
@@ -162,7 +148,7 @@ Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_at
                 CSS: CSS,
                 FLAVORCONTROL: FLAVORCONTROL,
                 component: COMPONENTNAME,
-                defaultflavor: this._config.defaultflavor,
+                defaultflavor: this.get('defaultflavor'),
                 clickedicon: clickedicon
             }));
 
@@ -170,30 +156,41 @@ Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_at
         this._form.one('.' + CSS.INPUTSUBMIT).on('click', this._doInsert, this);
         return content;
     },
-    
+
     /**
      * Inserts the users input onto the page
      * @method _getDialogueContent
      * @private
      */
-	_doInsert : function(e){
-		e.preventDefault();
-		this.getDialogue({
+    _doInsert : function(e){
+        e.preventDefault();
+        this.getDialogue({
             focusAfterHide: null
         }).hide();
-        
-        var flavorcontrol = document.getElementById(this._getFlavorControlName());
-        //if no file is there to insert, don't do it
-        if(!flavorcontrol.value){
-        	Y.log('No flavor control or value could be found.','warn', LOGNAME);
-        	return;
+
+        var flavorcontrol = this._form.one(SELECTORS.FLAVORCONTROL);
+
+        // If no file is there to insert, don't do it.
+        if (!flavorcontrol.get('value')){
+            Y.log('No flavor control or value could be found.', 'warn', LOGNAME);
+            return;
         }
-        
-        var flavor = flavorcontrol.value;
-		
-		this.editor.focus();
-		this.get('host').insertContentAtFocusPoint(flavor);
-		this.markUpdated();
-		
-	}
+
+        this.editor.focus();
+        this.get('host').insertContentAtFocusPoint(flavorcontrol.get('value'));
+        this.markUpdated();
+
+    }
+}, {
+    disabled: {
+        value: false
+    },
+
+    usercontextid: {
+        value: null
+    },
+
+    defaultflavor: {
+        value: ''
+    }
 });
