@@ -107,7 +107,6 @@ Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_at
     _displayDialogue: function(e, clickedicon) {
         e.preventDefault();
         var width=400;
-        var height=260;
 
 
         var dialogue = this.getDialogue({
@@ -115,8 +114,9 @@ Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_at
             width: width + 'px',
             focusAfterHide: clickedicon
         });
-
-        if(dialogue.width != width + 'px'){
+		//dialog doesn't detect changes in width without this
+		//if you reuse the dialog, this seems necessary
+        if(dialogue.width !== width + 'px'){
             dialogue.set('width',width+'px');
         }
 

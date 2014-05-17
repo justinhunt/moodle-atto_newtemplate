@@ -43,12 +43,16 @@ this module template code.
   IMPORTANT: Now add the name of your plugin to the menu structure near the bottom of the page
   e.g style1 = title, bold, italic, widget
   (where widget is the name of your atto plugin)
-
-* You may now proceed to run your own code in an attempt to develop
-  your module. You will probably want to modify lib.php and
-  yui/src/button/js/button.js
+  
+* You will need to generate the js for your editor icon button. 
+  Your icon won't even show until you have done this.
+  The source for the button is at yui/src/button/js/button.js
   Changes to button.js won't do anything until you have run "shifter" over them.
   See:  http://docs.moodle.org/dev/YUI/Shifter
+  
+
+* You may now proceed to run your own code in an attempt to develop
+  your module. 
 
   For more information on developing Atto plugins
   see: http://docs.moodle.org/dev/Atto#Atto_Plugins
