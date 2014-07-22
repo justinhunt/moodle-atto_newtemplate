@@ -56,16 +56,12 @@ var TEMPLATE = '' +
 
 Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_atto.EditorPlugin, [], {
 
-    /**
-     * A reference to the current selection at the time that the dialogue
-     * was opened.
+  
+	/**
+     * Initialize the button
      *
-     * @property _currentSelection
-     * @type Range
-     * @private
+     * @method Initializer
      */
-    _currentSelection: null,
-
     initializer: function() {
         // If we don't have the capability to view then give up.
         if (this.get('disabled')){
@@ -99,7 +95,7 @@ Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_at
     },
 
      /**
-     * Display the NEWTEMPLATE Recorder files.
+     * Display the NEWTEMPLATE Dialogue
      *
      * @method _displayDialogue
      * @private
@@ -181,16 +177,17 @@ Y.namespace('M.atto_NEWTEMPLATE').Button = Y.Base.create('button', Y.M.editor_at
         this.markUpdated();
 
     }
-}, {
-    disabled: {
-        value: false
-    },
+}, { ATTRS: {
+		disabled: {
+			value: false
+		},
 
-    usercontextid: {
-        value: null
-    },
+		usercontextid: {
+			value: null
+		},
 
-    defaultflavor: {
-        value: ''
-    }
+		defaultflavor: {
+			value: ''
+		}
+	}
 });
