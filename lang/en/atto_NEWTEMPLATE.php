@@ -33,3 +33,4 @@ $string['insert'] = 'Insert';
 $string['cancel'] = 'Cancel';
 $string['enterflavor'] = 'Enter Ice Cream Flavor';
 $string['defaultflavor'] = 'Default Ice Cream Flavor';
+$string['NEWTEMPLATE:visible'] = 'Visible';
